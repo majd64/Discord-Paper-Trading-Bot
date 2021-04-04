@@ -153,10 +153,12 @@ client.on ('message', async message => {
   }
 
   else if (command === "help"){
-    const fields = [{ name: '.price [symbol]', value: "Returns price of a coin", inline: false},
-    { name: '.wallet', value: "Shows wallet value, balance and all coins", inline: false},
-    { name: '.buy [symbol] [amount]', value: "Buys a coin", inline: false},
-    { name: '.sell [symbol] [amount]', value: "Sells a coin", inline: false}]
+    const fields = [{ name: '!price [symbol]', value: "Returns price of a coin", inline: false},
+    { name: '!wallet', value: "Shows wallet value, balance and all coins", inline: false},
+    { name: '!buy [symbol] [amount]', value: "Buys a coin (use 'max' to buy using your entire balance)", inline: false},
+    { name: '!sell [symbol] [amount]', value: "Sells a coin  (use 'max' to sell your entire balance)", inline: false},
+    { name: '!history', value: "Shows trade history", inline: false}]
+]
     const helpEmbed = new Discord.MessageEmbed()
     helpEmbed.setColor(color)
     helpEmbed.fields = fields
