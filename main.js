@@ -1,4 +1,4 @@
-//v1.0.0
+//v1.0.0.
 const Discord = require('discord.js');
 const axios = require('axios');
 require('custom-env').env('staging');
