@@ -158,7 +158,7 @@ client.on ('message', async message => {
     { name: '!buy [symbol] [amount]', value: "Buys a coin (use 'max' to buy using your entire balance)", inline: false},
     { name: '!sell [symbol] [amount]', value: "Sells a coin  (use 'max' to sell your entire balance)", inline: false},
     { name: '!history', value: "Shows trade history", inline: false}]
-]
+
     const helpEmbed = new Discord.MessageEmbed()
     helpEmbed.setColor(color)
     helpEmbed.fields = fields
