@@ -179,6 +179,10 @@ async function createOrder(orderType, user, args, message){
 
   input.symbol = input.symbol.toUpperCase()
 
+  if (input.symbol.includes("UP") || input.symbol.includes("DOWN")){
+    return message.channel.send(`No leveraged assets allowed!`)
+  }
+
   price(input.symbol, async price => {
     if (!price){
       return message.channel.send("Invalid symbol")
