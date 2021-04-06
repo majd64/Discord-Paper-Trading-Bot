@@ -16,7 +16,7 @@ mongoose.connect("mongodb+srv://admin:" + process.env.ATLASPASSWORD + "@cluster0
 
 const formatter = new Intl.NumberFormat('en-US', {style: 'currency',currency: "USD",minimumFractionDigits: 5});
 
-const prefix = "!";
+const prefix = "=";
 const color = "#9b59b6"
 
 client.on ('message', async message => {
@@ -135,6 +135,8 @@ client.on ('message', async message => {
         if (leaderboard.length >= users.length){
           leaderboard.sort((a, b) => parseFloat(b.total) - parseFloat(a.total));
           var itemsImbed = new Discord.MessageEmbed().setColor(color)
+          itemsImbed.addField(`Total number of users`, `${leaderboard.length}`);
+
           for (let i = 0; i < 10; i++){
             itemsImbed.addField(`${i + 1}) ${leaderboard[i].username ? leaderboard[i].username : "Username not stored yet"}`, `${formatter.format(leaderboard[i].total)}`);
           }
@@ -187,7 +189,7 @@ async function createOrder(orderType, user, args, message){
 
   user.openOrder = {order: orderType, symbol: input.symbol, amount: input.amount, price: p, date: Math.round(Date.now() / 1000)}
   user.save();
-  return message.channel.send(`Are you sure you want to ${orderType === "marketbuy" ? "buy" : "sell"} ${input.amount} ${input.symbol}. Price of ${input.symbol} is ${formatter.format(p)}. Total will be ${formatter.format(p * input.amount)}. (${prefix}yes or ${prefix}no)`)
+  return message.channel.send(`Are you sure you want to ${orderType === "marketbuy" ? "buy" : "sell"} ${input.amount} ${input.symbol}? Price of ${input.symbol} is ${formatter.format(p)}. Total will be ${formatter.format(p * input.amount)}. (${prefix}yes or ${prefix}no)`)
 }
 
 const price = symbol => {
