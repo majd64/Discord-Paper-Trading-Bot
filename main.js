@@ -8,7 +8,7 @@ const util = require("./util");
 
 const client = new Discord.Client();
 client.login(process.env.LOGIN);
-client.once('ready', () => {
+client.once('ready', async () => {
   console.log("Paper Trading Bot is running");
 });
 
@@ -186,35 +186,48 @@ async function createOrder(orderType, user, args, message){
   return message.channel.send(`Are you sure you want to ${orderType === "marketbuy" ? "buy" : "sell"} ${input.amount} ${input.symbol}? Price of ${input.symbol} is ${formatter.format(p)}. Total will be ${formatter.format(p * input.amount)}. (${prefix}yes or ${prefix}no)`)
 }
 
-const price = symbol => {
-  return new Promise((resolve, reject) => {
+const price = async symbol => {
+  return new Promise(async (resolve, reject) => {
     axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol.toUpperCase()}USDT`)
-      .then(res => {
+      .then(async res => {
         if (!res.data.price){
-          axios.get(`https://api.kucoin.com/api/v1/prices?currencies=${symbol.toUpperCase()}`)
-            .then(res => {
-              if (!res.data.data[symbol.toUpperCase()]){
-                return resolve(null)
-              }
-              resolve(res.data.data[symbol.toUpperCase()])
-            })
-            .catch(err => {
-              return resolve(null)
-            })
+          const price = await coingeckoPrice(symbol)
+          resolve(price)
         }
         resolve(res.data.price)
       })
+      .catch(async err => {
+        const price = await coingeckoPrice(symbol)
+        resolve(price)
+      })
+  })
+}
+
+const coingeckoPrice = async ticker => {
+  return new Promise(async (resolve, reject) => {
+    const id = await getId(ticker)
+    axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd`)
+      .then(res => {
+        if (res.data[id] && res.data[id].usd){
+          resolve(res.data[id].usd)
+        }
+      })
       .catch(err => {
-        axios.get(`https://api.kucoin.com/api/v1/prices?currencies=${symbol.toUpperCase()}`)
-          .then(res => {
-            if (!res.data.data[symbol.toUpperCase()]){
-              return resolve(null)
-            }
-            resolve(res.data.data[symbol.toUpperCase()])
-          })
-          .catch(err => {
-            return resolve(null)
-          })
+        resolve(null)
+      })
+  })
+}
+
+const getId = ticker => {
+  return new Promise((resolve, reject) => {
+    axios.get(`https://api.coingecko.com/api/v3/coins/list`)
+      .then(res => {
+        res.data.forEach((obj, i) => {
+          if (obj.symbol === ticker.toLowerCase()) return resolve(obj.id)
+        });
+      })
+      .catch(err => {
+        resolve(null)
       })
   })
 }
