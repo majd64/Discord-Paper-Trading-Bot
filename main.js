@@ -47,11 +47,11 @@ client.on ('message', async message => {
   }
 
   else if (command === "buy"){
-    res = await createOrder("marketbuy", user, args, message)
+    createOrder("marketbuy", user, args, message)
   }
 
   else if (command === "sell"){
-    res = await createOrder("marketsell", user, args, message)
+    createOrder("marketsell", user, args, message)
   }
 
   else if (command === "yes"){
@@ -92,7 +92,7 @@ client.on ('message', async message => {
     message.channel.send("Order canclled")
   }
 
-  else if (command === "wallet"){//work on this
+  else if (command === "wallet"){
     var itemsImbed = new Discord.MessageEmbed()
 
     let wallet = await values(user.wallet)
@@ -156,7 +156,7 @@ client.on ('message', async message => {
 
     const helpEmbed = new Discord.MessageEmbed()
     .setColor(color)
-    .fields = fields;
+    helpEmbed.fields = fields;
     message.channel.send(helpEmbed)
   }
 });
@@ -165,15 +165,11 @@ async function createOrder(orderType, user, args, message){
   user.openOrder = undefined;
 
   const input = util.parseInput(args)
-
   if (!input) return message.channel.send(`Invalid input. To buy use the command *${prefix}buy 100 ada*`)
-
   input.symbol = input.symbol.toUpperCase()
-
   if (input.symbol.includes("UP") || input.symbol.includes("DOWN")) return message.channel.send(`No leveraged assets allowed!`)
 
   let p = await price(input.symbol);
-
   if (!p) return message.channel.send("Invalid symbol")
 
   let index;
@@ -183,9 +179,7 @@ async function createOrder(orderType, user, args, message){
     if (index === -1) return message.channel.send(`You have no ${input.symbol}`)
   }
 
-  if (input.amount === -1){
-    orderType === "marketbuy" ? (input.amount = user.usdbalance / p) : (input.amount = user.wallet[index].amount)
-  }
+  if (input.amount === -1) orderType === "marketbuy" ? (input.amount = user.usdbalance / p) : (input.amount = user.wallet[index].amount)
 
   user.openOrder = {order: orderType, symbol: input.symbol, amount: input.amount, price: p, date: Math.round(Date.now() / 1000)}
   user.save();
