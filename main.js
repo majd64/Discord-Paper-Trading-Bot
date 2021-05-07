@@ -17,7 +17,7 @@ mongoose.connect("mongodb+srv://admin:" + process.env.ATLASPASSWORD + "@cluster0
 const formatter = new Intl.NumberFormat('en-US', {style: 'currency',currency: "USD",minimumFractionDigits: 5});
 
 const prefix = "!";
-const color = "#9b59b6"
+const color = "#00d1ff"
 
 client.on ('message', async message => {
   if (!message.content.startsWith(prefix)) return
