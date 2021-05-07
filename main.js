@@ -5,7 +5,6 @@ require('custom-env').env('staging');
 let models = require("./models");
 const mongoose = require("mongoose");
 const util = require("./util");
-import Querystring from "query-string"
 
 const client = new Discord.Client();
 client.login(process.env.LOGIN);
