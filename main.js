@@ -5,6 +5,7 @@ require('custom-env').env('staging');
 let models = require("./models");
 const mongoose = require("mongoose");
 const util = require("./util");
+import Querystring from "query-string"
 
 const client = new Discord.Client();
 client.login(process.env.LOGIN);
@@ -27,7 +28,7 @@ client.on ('message', async message => {
     const newUser = new models.User({
       id: message.author.id,
       username: message.author.username,
-      usdbalance: 10000,
+      usdbalance: 100000,
       wallet: [],
       openOrder: undefined,
       orderHistory: []
